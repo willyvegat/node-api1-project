@@ -7,9 +7,13 @@ const server = express();
 
 
 server.get('/api/users', async (req, res) => {
+    /* User.find()
+        .then(users => {
+            res.json(users);
+        }) */
     try {
-        throw new Error("I cant get your users");
-    
+        const users = await User.find()
+        res.status(200).json(users)
     } catch(err) {
         res.status(500).json({ message: `The users information could not be retrieved ${err.message}` });
     }
