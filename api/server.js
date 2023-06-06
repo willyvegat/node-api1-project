@@ -7,19 +7,16 @@ const server = express();
 server.use(express.json());
 
 server.get('/api/users', async (req, res) => {
-    /* User.find()
+    User.find()
         .then(users => {
             res.json(users);
-        }) */
-    try {
-        const users = await User.find()
-        res.status(200).json(users)
-    } catch(err) {
-        res.status(500).json({ 
-            message: "The users information could not be retrieved",
-            err: err.message  
-    });
-    }
+        }) 
+        .catch(err => {
+            res.status(500).json({ 
+                message: "The users information could not be retrieved",
+                err: err.message  
+            });
+        })
 })
 
 server.get('/api/users/:id', (req, res) => {
@@ -56,9 +53,25 @@ server.post('/api/users', (req, res) => {
                     err: err.message 
                 })
             })
-    }
-    
-        
+    }   
 })
+
+server.delete('/api/users/:id', async (req, res) => {
+    const removeUser = await User.findById(req.params.id)
+    if(!removeUser) {
+        res.status(404).json({
+            message: "The user with the specified ID does not exist"
+        })
+    } else {
+        const deletedUser = await User.remove(req.params.id)
+        res.status(200).json(deletedUser)
+    }
+})
+
+// server.put('/api/users/:id', (req, res) => {
+//     User.update()
+// })
+
+
 
 module.exports = server; 
